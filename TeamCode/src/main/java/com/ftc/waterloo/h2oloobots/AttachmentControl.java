@@ -34,7 +34,7 @@ public class AttachmentControl {
 
 //        color = hardwareMap.colorSensor.get("color");
 //        distance = hardwareMap.get(DistanceSensor.class, "distance");
-//        touch = hardwareMap.touchSensor.get("touch");
+        touch = hardwareMap.touchSensor.get("touch");
         motor = hardwareMap.dcMotor.get("motor");
         servo = hardwareMap.servo.get("servo");
 
