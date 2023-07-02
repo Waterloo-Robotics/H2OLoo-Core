@@ -21,9 +21,9 @@ public class OdometryControl extends LinearOpMode {
     public static double P_differential = 0.1;
 
 
-    final double MAX_POWER = 0.85;
-    final double MIN_POWER_STRAIGHT = 0.3;
-    final double MIN_POWER_TURNSTRAFE = 0.55;
+    public static double MAX_POWER = 0.85;
+    public static double MIN_POWER_STRAIGHT = 0.3;
+    public static double MIN_POWER_TURNSTRAFE = 0.55;
 
     public static double DISTANCE = 53;
 
@@ -88,7 +88,6 @@ public class OdometryControl extends LinearOpMode {
     }
 
     public void runOpMode() {}
-
 
     /** This just resets encoder counts, makes life easy for our side of things. */
     public void zeroEncoders() {
