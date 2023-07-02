@@ -89,7 +89,6 @@ public class OdometryControl extends LinearOpMode {
 
     public void runOpMode() {}
 
-
     /** This just resets encoder counts, makes life easy for our side of things. */
     public void zeroEncoders() {
 
@@ -102,7 +101,6 @@ public class OdometryControl extends LinearOpMode {
         horizEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }
-
 
     /**Drive forward a set amount of inches, with a set timeout just in case something goes terribly wrong.*/
     public void forward(double INCHES, double TIME) {
