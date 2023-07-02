@@ -15,12 +15,21 @@ public class OdometryControl extends LinearOpMode {
 
     public Encoder leftEncoder, rightEncoder, horizEncoder;
 
+
+    /** We use a proportional gain controller for our odometry, these are just different
+     * controller's gain levels.*/
     public static double P_gen_forwardback = 0.03;
     public static double P_gen_strafe = 0.05;
     public static double P_gen_turn = 0.03;
     public static double P_differential = 0.1;
 
 
+
+    /** @MAX_POWER - Maximum power the motors can be set to (range: 0-1)
+     *  @MIN_POWER_STRAIGHT - Minimum power possible to be set for forward or back movements.
+     *  @MIN_POWER_TURNSTRAFE - Minimum power possible to be set for turning or strafing.
+     *                          This is typically higher than the straight minimum power.
+     */
     final double MAX_POWER = 0.85;
     final double MIN_POWER_STRAIGHT = 0.3;
     final double MIN_POWER_TURNSTRAFE = 0.55;
@@ -102,7 +111,13 @@ public class OdometryControl extends LinearOpMode {
 
     }
 
-    /**Drive forward a set amount of inches, with a set timeout just in case something goes terribly wrong.*/
+
+    /**Drive forward
+     * @param INCHES amount of inches to go forward
+     * @param TIME A timeout to wait before starting the movement. This is useful for
+     *              using consecutive movements, when different movements can bleed into
+     *              each other without a proper delay between movements.
+     */
     public void forward(double INCHES, double TIME) {
 
         double rightOffset = 0, leftOffset = 0, genPower = 0, rightPower = 0, leftPower = 0;
