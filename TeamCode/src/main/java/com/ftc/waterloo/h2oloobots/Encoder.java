@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+/**This class just makes it easier to visualise the encoders as seperate objects from the motors their ports are associated with.*/
 public class Encoder {
 
     DcMotorEx encoder;
