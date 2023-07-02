@@ -27,28 +27,32 @@ public class DriveTrain {
 
     }
 
-    public void TwoWheelInit(boolean RUN_USING_ENCODER) {
+    /**Initialization for two motor drivebase (one left, one right).*/
+    public void TwoWheelInit() {
 
         left = hardwareMap.dcMotor.get("left");
         right = hardwareMap.dcMotor.get("right");
 
-        if (RUN_USING_ENCODER) {
-            left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+        left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
     }
 
-    public void TwoWheelDriveTeleOp(double FBInput, double PivotInput, boolean RUN_USING_ENCODER) {
+    /**Simple two wheel drive TeleOp.
+     * @param FBInput input used for forward and back movements.
+     * @param PivotInput input used for turning.*/
+    public void TwoWheelDriveTeleOp(double FBInput, double PivotInput) {
 
         right.setPower(FBInput - PivotInput);
         left.setPower(-FBInput - PivotInput);
 
     }
 
-    public void FourMotorInit(boolean RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
+    /**Four motor initialization command for any four motor drive base with two motors on either side. Could be mecanum or tank.*/
+    public void FourMotorInit(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
 
         fl = hardwareMap.dcMotor.get("fl");
         fr = hardwareMap.dcMotor.get("fr");
@@ -60,17 +64,16 @@ public class DriveTrain {
         bl.setZeroPowerBehavior(zeroPowerBehavior);
         br.setZeroPowerBehavior(zeroPowerBehavior);
 
-        if (RUN_USING_ENCODER) {
-            fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+        fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
     }
 
     public void FourMotorInit() {
