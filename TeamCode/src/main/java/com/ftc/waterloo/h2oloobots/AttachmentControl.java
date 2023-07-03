@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * imports Android Studio is pretty good at auto importing.*/
 public class AttachmentControl {
 
-    /* This declares a global telemetryControl variable to make our lives easier, we set these when
+    /** This declares a global telemetryControl variable to make our lives easier, we set these when
      * we initialise the file. You can use this telemetryControl variable to add telemetry without
      * having to route it from the opMode to this class.
     */
