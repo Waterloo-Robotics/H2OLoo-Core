@@ -10,26 +10,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorColor;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
+/**This AttachmentControl class just offers a global area to store any non-drivebase commands and
+ * devices to be used as chosen. Most imports should be added already, but if you need other
+ * imports Android Studio is pretty good at auto importing.*/
 public class AttachmentControl {
 
-    // This declares global variables to make our lives easier, we set these when we initialise the file.
+    /* This declares a global telemetryControl variable to make our lives easier, we set these when
+     * we initialise the file. You can use this telemetryControl variable to add telemetry without
+     * having to route it from the opMode to this class.
+    */
     TelemetryControl telemetryControl;
-    HardwareMap hardwareMap;
 
     public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl) {
 
-        this.hardwareMap = hardwareMap;
         this.telemetryControl = telemetryControl;
-
-    }
-
-    public void attachmentTelemetry() {
-
-
 
     }
 
