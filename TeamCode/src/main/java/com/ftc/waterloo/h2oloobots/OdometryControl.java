@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**This is for 3 wheel odometry, typically mecanum but could be for any 4 wheel drive.*/
 @Config
-public class OdometryControl extends LinearOpMode {
+public class OdometryControl {
 
     public DcMotorEx fl, fr, bl, br;
 
@@ -25,7 +25,11 @@ public class OdometryControl extends LinearOpMode {
     public static double P_gen_turn = 0.03;
     public static double P_differential = 0.1;
 
-
+    /** These variables store the position at the start of the move.
+     * They are necessary to maintain knowledge of where we are on the field. */
+    double leftPositionAtStart = 0;
+    double rightPositionAtStart = 0;
+    double horizPositionAtStart = 0;
 
     /** Range for all of these: 0-1
      * @MAX_POWER - Maximum power the motors can be set to
@@ -46,8 +50,11 @@ public class OdometryControl extends LinearOpMode {
     /*
      * Track Width is the distance between the two sets of wheels (defined by the line of x below).
      *
+     * TODO this will need to be updated for turns to work. it might not be the actual value
+     *  that is physically measured.
+     *
      *          FRONT
-     *  o--------------------o
+     *  O--------------------O
      *  |                    |
      *  |                    |
      *  |                    |
@@ -55,7 +62,7 @@ public class OdometryControl extends LinearOpMode {
      *  |                    |
      *  |                    |
      *  |                    |
-     *  o--------------------o
+     *  O--------------------O
      */
     double trackWidth = 1.0;
     // fullRotation: the amount the wheels travel in a full rotation
@@ -65,10 +72,7 @@ public class OdometryControl extends LinearOpMode {
     double countsPerDegree = countsPerRobotRev / 360;
     double inchesPerDegree = toInches(countsPerDegree);
 
-
-
-    HardwareMap hardwareMapLocal;
-    TelemetryControl telemetryControlLocal;
+    TelemetryControl telemetryControl;
 
     ElapsedTime time = new ElapsedTime();
 
@@ -90,7 +94,7 @@ public class OdometryControl extends LinearOpMode {
         bl.setDirection(DcMotorSimple.Direction.REVERSE);
 //        br.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        /** The device name should match the device name of the motor it is plugged in to.*/
+        // The device name should match the device name of the motor it is plugged in to.
         leftEncoder = new Encoder(
                 hardwareMap,
                 "fl",
@@ -126,23 +130,17 @@ public class OdometryControl extends LinearOpMode {
         rightEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         horizEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        hardwareMapLocal = hardwareMap;
-        telemetryControlLocal = telemetryControl;
+        // defines the local telemetryControl value to reflect that of the parent class.
+        this.telemetryControl = telemetryControl;
 
     }
 
-    public void runOpMode() {}
-
-    /** This just resets encoder counts, makes life easy for our side of things. */
+    /** Updates the positionAtStart values to the current position. */
     public void zeroEncoders() {
 
-        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        horizEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        horizEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftPositionAtStart = leftEncoder.getDistance(Encoder.MeasurementUnit.IN);
+        rightPositionAtStart = rightEncoder.getDistance(Encoder.MeasurementUnit.IN);
+        horizPositionAtStart = horizEncoder.getDistance(Encoder.MeasurementUnit.IN);
 
     }
 
@@ -172,10 +170,10 @@ public class OdometryControl extends LinearOpMode {
 
         time.reset();
         // while loop that only ends once distance is reached or the command hits the timeout (10 seconds)
-        while (!destinationReached && time.seconds() < 10 + initialDelay && !isStopRequested()) {
+        while (!destinationReached && time.seconds() < 10 + initialDelay) {
 
-            rightTravelled = rightEncoder.getDistance(Encoder.MeasurementUnit.IN);
-            leftTravelled = -leftEncoder.getDistance(Encoder.MeasurementUnit.IN);
+            rightTravelled = rightEncoder.getDistance(Encoder.MeasurementUnit.IN) - rightPositionAtStart;
+            leftTravelled = -(leftEncoder.getDistance(Encoder.MeasurementUnit.IN) - leftPositionAtStart);
 
             distanceTravelled = ((leftTravelled + rightTravelled) / 2.0);
 
@@ -201,18 +199,18 @@ public class OdometryControl extends LinearOpMode {
                 leftOffset = (leftOffset + ((leftTravelled - rightTravelled) * P_differential)) / 2.0;
             }
 
-            telemetryControlLocal.addData("distanceTravelled", (distanceTravelled));
-            telemetryControlLocal.addData("Right Offset", (rightOffset));
-            telemetryControlLocal.addData("Left Offset", (leftOffset));
-            telemetryControlLocal.addData("Seconds", (seconds));
+            telemetryControl.addData("distanceTravelled", (distanceTravelled));
+            telemetryControl.addData("Right Offset", (rightOffset));
+            telemetryControl.addData("Left Offset", (leftOffset));
+            telemetryControl.addData("Seconds", (seconds));
 
-            telemetryControlLocal.addData("Diff Error", (differentialError));
-            telemetryControlLocal.addData("GenPower", (genPower));
-            telemetryControlLocal.addData("fl", fl.getPower());
-            telemetryControlLocal.addData("fr", fr.getPower());
-            telemetryControlLocal.addData("bl", bl.getPower());
-            telemetryControlLocal.addData("br", br.getPower());
-            telemetryControlLocal.update();
+            telemetryControl.addData("Diff Error", (differentialError));
+            telemetryControl.addData("GenPower", (genPower));
+            telemetryControl.addData("fl", fl.getPower());
+            telemetryControl.addData("fr", fr.getPower());
+            telemetryControl.addData("bl", bl.getPower());
+            telemetryControl.addData("br", br.getPower());
+            telemetryControl.update();
 
 
             //Calc side powers
@@ -294,10 +292,10 @@ public class OdometryControl extends LinearOpMode {
         boolean waited = false;
 
         time.reset();
-        while (!destinationReached && time.seconds() < 10 + initialDelay && !isStopRequested()) {
+        while (!destinationReached && time.seconds() < 10 + initialDelay) {
 
-            rightTravelled = -rightEncoder.getDistance(Encoder.MeasurementUnit.IN);
-            leftTravelled = leftEncoder.getDistance(Encoder.MeasurementUnit.IN);
+            rightTravelled = -(rightEncoder.getDistance(Encoder.MeasurementUnit.IN) - rightPositionAtStart);
+            leftTravelled = leftEncoder.getDistance(Encoder.MeasurementUnit.IN) - leftPositionAtStart;
 
             distanceTravelled = ((leftTravelled + rightTravelled) / 2.0);
 
@@ -323,18 +321,18 @@ public class OdometryControl extends LinearOpMode {
                 leftOffset = (leftOffset + ( (leftTravelled - rightTravelled) * P_differential) ) / 2.0;
             }
 
-            telemetryControlLocal.addData("distanceTravelled", (distanceTravelled));
-            telemetryControlLocal.addData("Right Offset", (rightOffset));
-            telemetryControlLocal.addData("Left Offset", (leftOffset));
-            telemetryControlLocal.addData("Seconds", (seconds));
+            telemetryControl.addData("distanceTravelled", (distanceTravelled));
+            telemetryControl.addData("Right Offset", (rightOffset));
+            telemetryControl.addData("Left Offset", (leftOffset));
+            telemetryControl.addData("Seconds", (seconds));
 
-            telemetryControlLocal.addData("Diff Error", (differentialError));
-            telemetryControlLocal.addData("GenPower", (genPower));
-            telemetryControlLocal.addData("fl", fl.getPower());
-            telemetryControlLocal.addData("fr", fr.getPower());
-            telemetryControlLocal.addData("bl", bl.getPower());
-            telemetryControlLocal.addData("br", br.getPower());
-            telemetryControlLocal.update();
+            telemetryControl.addData("Diff Error", (differentialError));
+            telemetryControl.addData("GenPower", (genPower));
+            telemetryControl.addData("fl", fl.getPower());
+            telemetryControl.addData("fr", fr.getPower());
+            telemetryControl.addData("bl", bl.getPower());
+            telemetryControl.addData("br", br.getPower());
+            telemetryControl.update();
 
 
             //Calc side powers
@@ -418,11 +416,11 @@ public class OdometryControl extends LinearOpMode {
         boolean waited = false;
 
         time.reset();
-        while (!destinationReached && time.seconds() < 6 + initialDelay && !isStopRequested()) {
+        while (!destinationReached && time.seconds() < 6 + initialDelay) {
 
-            rightTravelled = rightEncoder.getDistance(Encoder.MeasurementUnit.IN);
-            leftTravelled = -leftEncoder.getDistance(Encoder.MeasurementUnit.IN);
-            horizTravelled = -horizEncoder.getDistance(Encoder.MeasurementUnit.IN);
+            rightTravelled = rightEncoder.getDistance(Encoder.MeasurementUnit.IN) - rightPositionAtStart;
+            leftTravelled = -(leftEncoder.getDistance(Encoder.MeasurementUnit.IN) - leftPositionAtStart);
+            horizTravelled = -(horizEncoder.getDistance(Encoder.MeasurementUnit.IN) - horizPositionAtStart);
 
             distanceTravelledForward = ((leftTravelled + rightTravelled) / 2.0);
             distanceTravelled = horizTravelled;
@@ -433,18 +431,18 @@ public class OdometryControl extends LinearOpMode {
 
             genPower = (genPower + (error * P_gen_strafe)) / 2.0;
 
-            telemetryControlLocal.addData("distanceTravelledForward", distanceTravelledForward);
-            telemetryControlLocal.addData("Right Offset", rightOffset);
-            telemetryControlLocal.addData("Left Offset", leftOffset);
-            telemetryControlLocal.addData("Seconds", seconds);
+            telemetryControl.addData("distanceTravelledForward", distanceTravelledForward);
+            telemetryControl.addData("Right Offset", rightOffset);
+            telemetryControl.addData("Left Offset", leftOffset);
+            telemetryControl.addData("Seconds", seconds);
 
-            telemetryControlLocal.addData("Diff Error", (headingError));
-            telemetryControlLocal.addData("GenPower", (genPower));
-            telemetryControlLocal.addData("fl", fl.getPower());
-            telemetryControlLocal.addData("fr", fr.getPower());
-            telemetryControlLocal.addData("bl", bl.getPower());
-            telemetryControlLocal.addData("br", br.getPower());
-            telemetryControlLocal.update();
+            telemetryControl.addData("Diff Error", (headingError));
+            telemetryControl.addData("GenPower", (genPower));
+            telemetryControl.addData("fl", fl.getPower());
+            telemetryControl.addData("fr", fr.getPower());
+            telemetryControl.addData("bl", bl.getPower());
+            telemetryControl.addData("br", br.getPower());
+            telemetryControl.update();
 
 
             // Calc side powers
@@ -530,11 +528,11 @@ public class OdometryControl extends LinearOpMode {
         boolean waited = false;
 
         time.reset();
-        while (!destinationReached && time.seconds() < 6 + initialDelay && !isStopRequested()) {
+        while (!destinationReached && time.seconds() < 6 + initialDelay) {
 
-            rightTravelled = rightEncoder.getDistance(Encoder.MeasurementUnit.IN);
-            leftTravelled = -leftEncoder.getDistance(Encoder.MeasurementUnit.IN);
-            horizTravelled = horizEncoder.getDistance(Encoder.MeasurementUnit.IN);
+            rightTravelled = rightEncoder.getDistance(Encoder.MeasurementUnit.IN) - rightPositionAtStart;
+            leftTravelled = -(leftEncoder.getDistance(Encoder.MeasurementUnit.IN) - leftPositionAtStart);
+            horizTravelled = horizEncoder.getDistance(Encoder.MeasurementUnit.IN) - horizPositionAtStart;
 
             distanceTravelledForward = ((leftTravelled + rightTravelled) / 2.0);
             distanceTravelled = horizTravelled;
@@ -545,18 +543,18 @@ public class OdometryControl extends LinearOpMode {
 
             genPower = (genPower + (error * P_gen_strafe)) / 2.0;
 
-            telemetryControlLocal.addData("distanceTravelledForward", (distanceTravelledForward));
-            telemetryControlLocal.addData("Right Offset", (rightOffset));
-            telemetryControlLocal.addData("Left Offset", (leftOffset));
-            telemetryControlLocal.addData("Seconds", (seconds));
+            telemetryControl.addData("distanceTravelledForward", (distanceTravelledForward));
+            telemetryControl.addData("Right Offset", (rightOffset));
+            telemetryControl.addData("Left Offset", (leftOffset));
+            telemetryControl.addData("Seconds", (seconds));
 
-            telemetryControlLocal.addData("Diff Error", (headingError));
-            telemetryControlLocal.addData("GenPower", (genPower));
-            telemetryControlLocal.addData("fl", fl.getPower());
-            telemetryControlLocal.addData("fr", fr.getPower());
-            telemetryControlLocal.addData("bl", bl.getPower());
-            telemetryControlLocal.addData("br", br.getPower());
-            telemetryControlLocal.update();
+            telemetryControl.addData("Diff Error", (headingError));
+            telemetryControl.addData("GenPower", (genPower));
+            telemetryControl.addData("fl", fl.getPower());
+            telemetryControl.addData("fr", fr.getPower());
+            telemetryControl.addData("bl", bl.getPower());
+            telemetryControl.addData("br", br.getPower());
+            telemetryControl.update();
 
 
             //Calc side powers
@@ -641,10 +639,10 @@ public class OdometryControl extends LinearOpMode {
         boolean waited = false;
 
         time.reset();
-        while (!destinationReached && time.seconds() < 10 + initialDelay && !isStopRequested()) {
+        while (!destinationReached && time.seconds() < 10 + initialDelay) {
 
-            rightTravelled = -rightEncoder.getDistance(Encoder.MeasurementUnit.IN) * inchesPerDegree;
-            leftTravelled = -leftEncoder.getDistance(Encoder.MeasurementUnit.IN) * inchesPerDegree;
+            rightTravelled = -(rightEncoder.getDistance(Encoder.MeasurementUnit.IN) - rightPositionAtStart) * inchesPerDegree;
+            leftTravelled = -(leftEncoder.getDistance(Encoder.MeasurementUnit.IN) - leftPositionAtStart) * inchesPerDegree;
 
             distanceTravelled = ((leftTravelled + rightTravelled) / 2.0);
 
@@ -652,18 +650,18 @@ public class OdometryControl extends LinearOpMode {
 
             genPower = (genPower + (error * P_gen_turn)) / 2.0;
 
-            telemetryControlLocal.addData("distanceTravelled", (distanceTravelled));
-            telemetryControlLocal.addData("Right Offset", (rightOffset));
-            telemetryControlLocal.addData("Left Offset", (leftOffset));
-            telemetryControlLocal.addData("Seconds", (seconds));
+            telemetryControl.addData("distanceTravelled", (distanceTravelled));
+            telemetryControl.addData("Right Offset", (rightOffset));
+            telemetryControl.addData("Left Offset", (leftOffset));
+            telemetryControl.addData("Seconds", (seconds));
 
-            telemetryControlLocal.addData("Diff Error", (differentialError));
-            telemetryControlLocal.addData("GenPower", (genPower));
-            telemetryControlLocal.addData("fl", fl.getPower());
-            telemetryControlLocal.addData("fr", fr.getPower());
-            telemetryControlLocal.addData("bl", bl.getPower());
-            telemetryControlLocal.addData("br", br.getPower());
-            telemetryControlLocal.update();
+            telemetryControl.addData("Diff Error", (differentialError));
+            telemetryControl.addData("GenPower", (genPower));
+            telemetryControl.addData("fl", fl.getPower());
+            telemetryControl.addData("fr", fr.getPower());
+            telemetryControl.addData("bl", bl.getPower());
+            telemetryControl.addData("br", br.getPower());
+            telemetryControl.update();
 
 
             //Calc side powers
@@ -722,7 +720,13 @@ public class OdometryControl extends LinearOpMode {
 
     }
 
-    public void turnLeft(double INCHES, double initialDelay) {
+    /**Turn Left
+     * @param DEGREES amount of inches to go forward
+     * @param initialDelay A timeout to wait before starting the movement. This is useful for
+     *              using consecutive movements, when different movements can bleed into
+     *              each other without a proper delay between movements.
+     */
+    public void turnLeft(double DEGREES, double initialDelay) {
 
         double rightOffset = 0, leftOffset = 0, genPower = 0, rightPower = 0, leftPower = 0;
 
@@ -739,29 +743,29 @@ public class OdometryControl extends LinearOpMode {
 
         boolean waited = false;
 
-        while (!destinationReached && time.seconds() < 10 + initialDelay && !isStopRequested()) {
+        while (!destinationReached && time.seconds() < 10 + initialDelay) {
 
-            rightTravelled = rightEncoder.getDistance(Encoder.MeasurementUnit.IN);
-            leftTravelled = leftEncoder.getDistance(Encoder.MeasurementUnit.IN);
+            rightTravelled = (rightEncoder.getDistance(Encoder.MeasurementUnit.IN) - rightPositionAtStart) * inchesPerDegree;
+            leftTravelled = (leftEncoder.getDistance(Encoder.MeasurementUnit.IN) - leftPositionAtStart) * inchesPerDegree;
 
             distanceTravelled = ((leftTravelled + rightTravelled) / 2.0);
 
-            error = distanceTravelled - INCHES;
+            error = distanceTravelled - DEGREES;
 
             genPower = (genPower + (error * P_gen_turn)) / 2.0;
 
-            telemetryControlLocal.addData("distanceTravelled", (distanceTravelled));
-            telemetryControlLocal.addData("Right Offset", (rightOffset));
-            telemetryControlLocal.addData("Left Offset", (leftOffset));
-            telemetryControlLocal.addData("Seconds", (seconds));
+            telemetryControl.addData("distanceTravelled", (distanceTravelled));
+            telemetryControl.addData("Right Offset", (rightOffset));
+            telemetryControl.addData("Left Offset", (leftOffset));
+            telemetryControl.addData("Seconds", (seconds));
 
-            telemetryControlLocal.addData("Diff Error", (differentialError));
-            telemetryControlLocal.addData("GenPower", (genPower));
-            telemetryControlLocal.addData("fl", fl.getPower());
-            telemetryControlLocal.addData("fr", fr.getPower());
-            telemetryControlLocal.addData("bl", bl.getPower());
-            telemetryControlLocal.addData("br", br.getPower());
-            telemetryControlLocal.update();
+            telemetryControl.addData("Diff Error", (differentialError));
+            telemetryControl.addData("GenPower", (genPower));
+            telemetryControl.addData("fl", fl.getPower());
+            telemetryControl.addData("fr", fr.getPower());
+            telemetryControl.addData("bl", bl.getPower());
+            telemetryControl.addData("br", br.getPower());
+            telemetryControl.update();
 
 
             //Calc side powers
@@ -807,7 +811,7 @@ public class OdometryControl extends LinearOpMode {
             fl.setPower(leftPower);
             bl.setPower(leftPower);
 
-            if (distanceTravelled > INCHES) {
+            if (distanceTravelled > DEGREES) {
                 destinationReached = true;
             }
 
@@ -820,6 +824,9 @@ public class OdometryControl extends LinearOpMode {
 
     }
 
+    /**Converts encoder counts to inches, using the counts per revolution, gear ratio, and wheel
+     * diameter specified earlier.
+     * @param encoderCount the encoder count to be converted into inches.*/
     private double toInches(double encoderCount) {
 
         return (encoderCount / this.countsPerRevolution) * gearRatio * deadWheelCircumference / 25.4;
