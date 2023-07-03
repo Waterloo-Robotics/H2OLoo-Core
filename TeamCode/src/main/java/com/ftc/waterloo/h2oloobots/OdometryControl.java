@@ -100,21 +100,24 @@ public class OdometryControl {
                 "fl",
                 8192,
                 deadWheelDiameter,
-                Encoder.MeasurementUnit.MM
+                Encoder.MeasurementUnit.MM,
+                gearRatio
         );
         rightEncoder = new Encoder(
                 hardwareMap,
                 "fr",
                 8192,
                 deadWheelDiameter,
-                Encoder.MeasurementUnit.MM
+                Encoder.MeasurementUnit.MM,
+                gearRatio
         );
         horizEncoder = new Encoder(
                 hardwareMap,
                 "br",
                 8192,
                 deadWheelDiameter,
-                Encoder.MeasurementUnit.MM
+                Encoder.MeasurementUnit.MM,
+                gearRatio
         );
 
         // if any encoders need reversed, do so here.
