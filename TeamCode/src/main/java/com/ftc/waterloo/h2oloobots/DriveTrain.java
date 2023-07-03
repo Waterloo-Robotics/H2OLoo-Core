@@ -17,6 +17,21 @@ public class DriveTrain {
 
     }
 
+    public enum DriveDirection {
+
+        FORWARD,
+        BACKWARD,
+        STRAFE_LEFT,
+        STRAFE_RIGHT,
+        TURN_CLOCKWISE,
+        TURN_COUNTERCLOCKWISE,
+        DIAGONAL_FORWARD_RIGHT,
+        DIAGONAL_FORWARD_LEFT,
+        DIAGONAL_BACKWARD_RIGHT,
+        DIAGONAL_BACKWARD_LEFT,
+
+    }
+
     DriveTrainType driveTrainType;
 
     // defines drive motors for a 4 wheel drive
@@ -248,24 +263,24 @@ public class DriveTrain {
      * @param PivotInput input used for turning.*/
     public void TwoWheelDriveTeleOp(double FBInput, double PivotInput) {
 
-        right.setPower(FBInput - PivotInput);
-        left.setPower(-FBInput - PivotInput);
+        right.setPower(FBInput + PivotInput);
+        left.setPower(FBInput - PivotInput);
 
     }
 
     void FWDTeleOp(double FBInput, double PivotInput) {
 
-        fr.setPower(-FBInput - PivotInput);
+        fr.setPower(FBInput + PivotInput);
         fl.setPower(FBInput - PivotInput);
-        br.setPower(-FBInput - PivotInput);
+        br.setPower(FBInput + PivotInput);
         bl.setPower(FBInput - PivotInput);
 
     }
 
     void MecanumTeleOp(double FBInput, double LRInput, double PivotInput) {
 
-        fr.setPower((-FBInput - LRInput - (PivotInput)));
-        br.setPower((-FBInput + LRInput - (PivotInput)));
+        fr.setPower((FBInput - LRInput - (PivotInput)));
+        br.setPower((FBInput + LRInput - (PivotInput)));
         fl.setPower((FBInput - LRInput - (PivotInput)));
         bl.setPower((FBInput + LRInput - (PivotInput)));
 
@@ -273,27 +288,7 @@ public class DriveTrain {
 
     }
 
-    void EncoderAutoInit(double WHEEL_DIAMETER_MM, double GEAR_RATIO, double COUNTS_PER_REVOLUTION) {
-
-        double WHEEL_DIAMETER_INCHES = WHEEL_DIAMETER_MM / 25.4;
-
-        COUNTS_PER_INCH = (COUNTS_PER_REVOLUTION * GEAR_RATIO) / (WHEEL_DIAMETER_INCHES * 3.1415);
-
-        COUNTS_PER_DEGREE = (COUNTS_PER_REVOLUTION * 50) / 90;
-
-    }
-
-    void EncoderAutoInit(double GEAR_RATIO, double COUNTS_PER_REVOLUTION) {
-
-        double WHEEL_DIAMETER_INCHES = 96 / 25.4;
-
-        COUNTS_PER_INCH = (COUNTS_PER_REVOLUTION * GEAR_RATIO) / (WHEEL_DIAMETER_INCHES * 3.1415);
-
-        COUNTS_PER_DEGREE = (COUNTS_PER_REVOLUTION * 50) / 90;
-
-    }
-
-    void timeAutoMecanumDrive(double FRPower, double FLPower, double BRPower, double BLPower, double SECONDS) {
+    void timeAutoFourWheelDrive(double FRPower, double FLPower, double BRPower, double BLPower, double SECONDS) {
 
         ElapsedTime time = new ElapsedTime();
 
@@ -315,6 +310,57 @@ public class DriveTrain {
 
     }
 
+    void timeAutoFourWheelDrive(DriveDirection driveDirection, double power, double SECONDS) {
+
+        //TODO fix this
+        double frPower = power;
+        double flPower = power;
+        double brPower = power;
+        double blPower = power;
+
+        switch (driveDirection) {
+
+            case FORWARD:
+                frPower *= 1;
+                flPower *= 1;
+                brPower *= 1;
+                blPower *= 1;
+            break;
+
+            case BACKWARD:
+                frPower *= -1;
+                flPower *= -1;
+                brPower *= -1;
+                blPower *= -1;
+            break;
+
+            case STRAFE_LEFT:
+                frPower *= 1;
+                flPower *= -1;
+                brPower *= -1;
+                blPower *= 1;
+            break;
+
+            case STRAFE_RIGHT:
+                frPower *= -1;
+                flPower *= 1;
+                brPower *= 1;
+                blPower *= -1;
+            break;
+
+            case TURN_CLOCKWISE:
+                frPower *= 1;
+                flPower *= -1;
+                brPower *= 1;
+                blPower *= -1;
+            break;
+
+        }
+
+        this.timeAutoFourWheelDrive(frPower, flPower, brPower, blPower, SECONDS);
+
+    }
+
     void EncoderAutoMecanumDrive(double INCHES_FB, double INCHES_LR, double DEGREES_TURN, double SPEED, int time) {
 
         ElapsedTime timer = new ElapsedTime();
@@ -325,10 +371,10 @@ public class DriveTrain {
 
         }
 
-        int frTargetPosition = fr.getCurrentPosition() + (int) (COUNTS_PER_INCH * INCHES_FB) - (int) (COUNTS_PER_INCH * INCHES_LR) - (int) (COUNTS_PER_DEGREE * DEGREES_TURN);
-        int brTargetPosition = br.getCurrentPosition() + (int) (COUNTS_PER_INCH * INCHES_FB) + (int) (COUNTS_PER_INCH * INCHES_LR) - (int) (COUNTS_PER_DEGREE * DEGREES_TURN);
-        int flTargetPosition = fl.getCurrentPosition() - (int) (COUNTS_PER_INCH * INCHES_FB) - (int) (COUNTS_PER_INCH * INCHES_LR) - (int) (COUNTS_PER_DEGREE * DEGREES_TURN);
-        int blTargetPosition = bl.getCurrentPosition() - (int) (COUNTS_PER_INCH * INCHES_FB) + (int) (COUNTS_PER_INCH * INCHES_LR) - (int) (COUNTS_PER_DEGREE * DEGREES_TURN);
+        int frTargetPosition = fr.getCurrentPosition() + (int) (this.COUNTS_PER_INCH * INCHES_FB) - (int) (this.COUNTS_PER_INCH * INCHES_LR) - (int) (this.COUNTS_PER_DEGREE * DEGREES_TURN);
+        int brTargetPosition = br.getCurrentPosition() + (int) (this.COUNTS_PER_INCH * INCHES_FB) + (int) (this.COUNTS_PER_INCH * INCHES_LR) - (int) (this.COUNTS_PER_DEGREE * DEGREES_TURN);
+        int flTargetPosition = fl.getCurrentPosition() - (int) (COUNTS_PER_INCH * INCHES_FB) - (int) (this.COUNTS_PER_INCH * INCHES_LR) - (int) (this.COUNTS_PER_DEGREE * DEGREES_TURN);
+        int blTargetPosition = bl.getCurrentPosition() - (int) (this.COUNTS_PER_INCH * INCHES_FB) + (int) (this.COUNTS_PER_INCH * INCHES_LR) - (int) (this.COUNTS_PER_DEGREE * DEGREES_TURN);
 
         fr.setTargetPosition(frTargetPosition);
         br.setTargetPosition(brTargetPosition);
