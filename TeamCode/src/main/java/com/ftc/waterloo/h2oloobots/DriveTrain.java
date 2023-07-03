@@ -196,6 +196,9 @@ public class DriveTrain {
 
     }
 
+    /**TeleOp code for a 4 wheel tank or two wheel drive.
+     * @param FBInput forward and back input, range -1 to 1
+     * @param pivotInput pivot input, range -1 to 1*/
     public void teleOpDrive(double FBInput, double pivotInput) {
 
         switch (driveTrainType) {
@@ -217,6 +220,10 @@ public class DriveTrain {
 
     }
 
+    /**TeleOp code for a mecanum drive.
+     * @param FBInput forward and back input, range -1 to 1
+     * @param LRInput left and right strafing input, range -1 to 1
+     * @param pivotInput pivot input, range -1 to 1*/
     public void teleOpDrive(double FBInput, double LRInput, double pivotInput) {
 
         switch (driveTrainType) {
@@ -246,11 +253,6 @@ public class DriveTrain {
 
     }
 
-    double fldir = 0;
-    double frdir = 0;
-    double bldir = 0;
-    double brdir = 0;
-
     void FWDTeleOp(double FBInput, double PivotInput) {
 
         fr.setPower(-FBInput - PivotInput);
@@ -260,14 +262,12 @@ public class DriveTrain {
 
     }
 
-    double speedMul = 1;
-
     void MecanumTeleOp(double FBInput, double LRInput, double PivotInput) {
 
-        fr.setPower(speedMul * (-FBInput - LRInput - (PivotInput)));
-        br.setPower(speedMul * (-FBInput + LRInput - (PivotInput)));
-        fl.setPower(speedMul * (FBInput - LRInput - (PivotInput)));
-        bl.setPower(speedMul * (FBInput + LRInput - (PivotInput)));
+        fr.setPower((-FBInput - LRInput - (PivotInput)));
+        br.setPower((-FBInput + LRInput - (PivotInput)));
+        fl.setPower((FBInput - LRInput - (PivotInput)));
+        bl.setPower((FBInput + LRInput - (PivotInput)));
 
         telemetryControl.motorTelemetryUpdate(fl.getPower(), fr.getPower(), bl.getPower(), br.getPower());
 
