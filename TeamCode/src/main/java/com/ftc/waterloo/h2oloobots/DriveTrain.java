@@ -1,6 +1,7 @@
 package com.ftc.waterloo.h2oloobots;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -182,6 +183,9 @@ public class DriveTrain {
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+        bl.setDirection(DcMotorSimple.Direction.REVERSE);
+
     }
 
     /**Four motor initialization command for any four motor drive base with two motors on either
@@ -208,6 +212,9 @@ public class DriveTrain {
         fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+        bl.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
 
@@ -263,26 +270,26 @@ public class DriveTrain {
      * @param PivotInput input used for turning.*/
     public void TwoWheelDriveTeleOp(double FBInput, double PivotInput) {
 
-        right.setPower(FBInput + PivotInput);
-        left.setPower(FBInput - PivotInput);
+        right.setPower(-FBInput - PivotInput);
+        left.setPower(-FBInput + PivotInput);
 
     }
 
     void FWDTeleOp(double FBInput, double PivotInput) {
 
-        fr.setPower(FBInput + PivotInput);
-        fl.setPower(FBInput - PivotInput);
-        br.setPower(FBInput + PivotInput);
-        bl.setPower(FBInput - PivotInput);
+        fr.setPower(-FBInput - PivotInput);
+        fl.setPower(-FBInput + PivotInput);
+        br.setPower(-FBInput - PivotInput);
+        bl.setPower(-FBInput + PivotInput);
 
     }
 
     void MecanumTeleOp(double FBInput, double LRInput, double PivotInput) {
 
-        fr.setPower((FBInput - LRInput - (PivotInput)));
-        br.setPower((FBInput + LRInput - (PivotInput)));
-        fl.setPower((FBInput - LRInput - (PivotInput)));
-        bl.setPower((FBInput + LRInput - (PivotInput)));
+        fr.setPower((-FBInput - LRInput - (PivotInput)));
+        br.setPower((-FBInput + LRInput - (PivotInput)));
+        fl.setPower((-FBInput + LRInput + (PivotInput)));
+        bl.setPower((-FBInput - LRInput + (PivotInput)));
 
         telemetryControl.motorTelemetryUpdate(fl.getPower(), fr.getPower(), bl.getPower(), br.getPower());
 
