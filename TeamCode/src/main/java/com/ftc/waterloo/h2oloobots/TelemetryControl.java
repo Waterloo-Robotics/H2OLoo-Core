@@ -17,8 +17,6 @@ public class TelemetryControl {
     double bldir = 0;
     double brdir = 0;
 
-    /**The TelemetryControl class converts typical telemetry to also send to the FTC Dashboard.
-     * @param telemetry the local telemetry from the OpMode's runOpMode() void.*/
     public TelemetryControl(Telemetry telemetry) {
 
         this.telemetry = telemetry;
@@ -27,9 +25,6 @@ public class TelemetryControl {
 
     }
 
-    /**Adds data to the telemetry, with a caption and a value (format: "caption: value")
-     * @param caption the caption to be displayed next to the value
-     * @param value the value to be displayed*/
     public void addData(String caption, Object value) {
 
         telemetry.addData(caption, value);
@@ -37,25 +32,12 @@ public class TelemetryControl {
 
     }
 
-    /**Adds a line of text to the telemetry.
-     * @param line the text to be displayed in the line*/
-    public void addLine(String line) {
-
-        telemetry.addLine(line);
-        packet.clearLines();
-        packet.addLine(line);
-
-    }
-
-    /**Updates telemetry to tell what direction the drivebase is moving.
-     * @param flpower the power for the front left motor
-     * @param frpower the power for the front right motor*/
     public void motorTelemetryUpdate(double flpower, double frpower, double blpower, double brpower) {
 
-        fldir = Math.signum(flpower);
-        frdir = Math.signum(frpower);
-        bldir = Math.signum(blpower);
-        brdir = Math.signum(brpower);
+        fldir = getDirection(flpower);
+        frdir = getDirection(frpower);
+        bldir = getDirection(blpower);
+        brdir = getDirection(brpower);
 
         double frontMin = Math.min(fldir, frdir);
         double backMin = Math.min(bldir, brdir);
@@ -64,19 +46,19 @@ public class TelemetryControl {
         double leftMax = Math.max(flpower, blpower);
         double rightMax = Math.max(frpower, brpower);
         packet.clearLines();
-        if (fldir != 0 || frdir != 0 || bldir != 0 || brdir != 0) {
-            if (fldir == 1 && bldir == 1 && frdir == 1 && brdir == 1)
-                direction = "Moving Forward";
-            if (fldir == -1 && bldir == -1 && frdir == -1 && brdir == -1)
-                direction = "Moving Backward";
-            if (fldir == -1 && bldir == 1 && frdir == 1 && brdir == -1)
-                direction = "Strafing Left";
-            if (fldir == 1 && bldir == -1 && frdir == -1 && brdir == 1)
-                direction = "Strafing Right";
+        if (fldir != 0 && frdir != 0 && bldir != 0 && brdir != 0) {
             if (fldir == -1 && bldir == -1 && frdir == 1 && brdir == 1)
-                direction = "Turning Counterclockwise";
+                direction = "Moving Forward";
             if (fldir == 1 && bldir == 1 && frdir == -1 && brdir == -1)
-                direction = "Turning Clockwise";
+                direction = "Moving Backward";
+            if (fldir == 1 && bldir == -1 && frdir == 1 && brdir == -1)
+                direction = "Strafing Left";
+            if (fldir == -1 && bldir == 1 && frdir == -1 && brdir == 1)
+                direction = "Strafing Right";
+            if (fldir == 1 && bldir == 1 && frdir == 1 && brdir == 1)
+                direction = "Turning Left";
+            if (fldir == -1 && bldir == -1 && frdir == -1 && brdir == -1)
+                direction = "Turning Right";
             if (frontMin == 0 && backMin == 0)
                 direction = "Moving Diagonally";
             if ((frontMin == 0 && backMin != 0) || (backMin == 0 && frontMin != 0))
@@ -92,11 +74,32 @@ public class TelemetryControl {
 
     }
 
-    /**Updates the telemetry and dashboard.*/
+    public void addLine(String line) {
+
+        telemetry.addLine(line);
+        packet.clearLines();
+        packet.addLine(line);
+
+    }
+
     public void update() {
 
         telemetry.update();
         dashboard.sendTelemetryPacket(packet);
+
+    }
+
+    public double getDirection(double motorPower) {
+
+        if (motorPower != 0) {
+
+            return (motorPower) / Math.abs(motorPower);
+
+        } else {
+
+            return 0;
+
+        }
 
     }
 
