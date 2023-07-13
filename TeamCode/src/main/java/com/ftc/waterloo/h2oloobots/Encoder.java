@@ -15,7 +15,6 @@ public class Encoder {
     double wheelDiameter;
     double wheelCircumference;
     double gearRatio;
-    int inverted = 1;
 
     public enum MeasurementUnit {
 
@@ -58,11 +57,10 @@ public class Encoder {
 
     /**Sets the direction of the encoder. This can be helpful if the encoder isn't giving an output
      * on the side of zero you would like it to.
-     * @param inverted whether or not the encoder is inverted.*/
-    void setInverted(boolean inverted) {
+     * @param direction the direction to set the encoder to.*/
+    void setDirection(DcMotorSimple.Direction direction) {
 
-        if (inverted) this.inverted = -1;
-        else this.inverted = 1;
+        encoder.setDirection(direction);
 
     }
 
@@ -101,7 +99,7 @@ public class Encoder {
     /**Returns the current read position, in encoder counts, as an int.*/
     public int getCurrentPosition() {
 
-        return this.inverted * encoder.getCurrentPosition();
+        return encoder.getCurrentPosition();
 
     }
 
