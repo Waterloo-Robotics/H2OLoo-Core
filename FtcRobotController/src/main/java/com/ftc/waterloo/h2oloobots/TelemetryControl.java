@@ -95,7 +95,7 @@ public class TelemetryControl {
         }
 
     }
-
+    
     /**Starts a camera stream pushed to the FTC Dashboard.
      * @param source The camera source
      * @param maxFps The maximum framerate allowed to be sent.*/
