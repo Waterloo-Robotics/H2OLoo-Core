@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 
 public class TelemetryControl {
 
@@ -87,48 +86,6 @@ public class TelemetryControl {
                 direction = "Moving Strangely";
             telemetry.addLine(direction + " at " + Math.max(leftMax, rightMax) + "% Speed");
             packet.addLine(direction + " at " + Math.max(leftMax, rightMax) + "% Speed");
-        } else {
-
-            telemetry.addLine("Stopped");
-            packet.addLine("Stopped");
-
-        }
-
-    }
-    
-    /**Starts a camera stream pushed to the FTC Dashboard.
-     * @param source The camera source
-     * @param maxFps The maximum framerate allowed to be sent.*/
-    public void startCameraStream(CameraStreamSource source, double maxFps) {
-
-        dashboard.startCameraStream(source, maxFps);
-
-    }
-
-    /**Updates telemetry to tell what direction the drivebase is moving for two motor drivebases.
-     * @param leftPower the power for the left motor
-     * @param rightPower the power for the right motor*/
-    public void motorTelemetryUpdate(double leftPower, double rightPower) {
-
-        leftDir = Math.signum(leftPower);
-        rightDir = Math.signum(rightPower);
-
-        double frontMin = Math.min(fldir, frdir);
-        double backMin = Math.min(bldir, brdir);
-
-        String direction = "";
-        packet.clearLines();
-        if (leftDir != 0 || rightDir != 0) {
-            if (leftDir == 1 && rightDir == 1)
-                direction = "Moving Forward";
-            if (leftDir == -1 && rightDir == -1)
-                direction = "Moving Backward";
-            if (leftDir == -1 && rightDir == 1)
-                direction = "Turning Counterclockwise";
-            if (leftDir == 1 && rightDir == -1)
-                direction = "Turning Clockwise";
-            telemetry.addLine(direction + " at " + Math.max(leftPower, rightPower) + "% Speed");
-            packet.addLine(direction + " at " + Math.max(leftPower, rightPower) + "% Speed");
         } else {
 
             telemetry.addLine("Stopped");
