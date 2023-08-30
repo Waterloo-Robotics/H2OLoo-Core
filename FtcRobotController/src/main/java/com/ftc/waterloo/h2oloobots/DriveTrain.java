@@ -278,10 +278,12 @@ public class DriveTrain {
 
             case TWO_WHEEL_DRIVE:
                 this.TwoWheelDriveTeleOp(FBInput, pivotInput);
+                telemetryControl.motorTelemetryUpdate(left.getPower(), right.getPower());
                 break;
 
             case FOUR_WHEEL_TANK:
                 this.FWDTeleOp(FBInput, pivotInput);
+                telemetryControl.motorTelemetryUpdate(fl.getPower(), fr.getPower(), bl.getPower(), br.getPower());
                 break;
 
             case MECANUM:
@@ -310,6 +312,7 @@ public class DriveTrain {
 
             case MECANUM:
                 this.MecanumTeleOp(FBInput, LRInput, pivotInput);
+                telemetryControl.motorTelemetryUpdate(fl.getPower(), fr.getPower(), bl.getPower(), br.getPower());
                 break;
 
         }
