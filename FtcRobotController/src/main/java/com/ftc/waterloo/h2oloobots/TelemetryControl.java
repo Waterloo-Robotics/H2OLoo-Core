@@ -17,6 +17,9 @@ public class TelemetryControl {
     double bldir = 0;
     double brdir = 0;
 
+    double leftDir = 0;
+    double rightDir = 0;
+
     /**The TelemetryControl class converts typical telemetry to also send to the FTC Dashboard.
      * @param telemetry the local telemetry from the OpMode's runOpMode() void.*/
     public TelemetryControl(Telemetry telemetry) {
@@ -83,6 +86,39 @@ public class TelemetryControl {
                 direction = "Moving Strangely";
             telemetry.addLine(direction + " at " + Math.max(leftMax, rightMax) + "% Speed");
             packet.addLine(direction + " at " + Math.max(leftMax, rightMax) + "% Speed");
+        } else {
+
+            telemetry.addLine("Stopped");
+            packet.addLine("Stopped");
+
+        }
+
+    }
+
+    /**Updates telemetry to tell what direction the drivebase is moving for two motor drivebases.
+     * @param leftPower the power for the left motor
+     * @param rightPower the power for the right motor*/
+    public void motorTelemetryUpdate(double leftPower, double rightPower) {
+
+        leftDir = Math.signum(leftPower);
+        rightDir = Math.signum(rightPower);
+
+        double frontMin = Math.min(fldir, frdir);
+        double backMin = Math.min(bldir, brdir);
+
+        String direction = "";
+        packet.clearLines();
+        if (leftDir != 0 || rightDir != 0) {
+            if (leftDir == 1 && rightDir == 1)
+                direction = "Moving Forward";
+            if (leftDir == -1 && rightDir == -1)
+                direction = "Moving Backward";
+            if (leftDir == -1 && rightDir == 1)
+                direction = "Turning Counterclockwise";
+            if (leftDir == 1 && rightDir == -1)
+                direction = "Turning Clockwise";
+            telemetry.addLine(direction + " at " + Math.max(leftPower, rightPower) + "% Speed");
+            packet.addLine(direction + " at " + Math.max(leftPower, rightPower) + "% Speed");
         } else {
 
             telemetry.addLine("Stopped");
