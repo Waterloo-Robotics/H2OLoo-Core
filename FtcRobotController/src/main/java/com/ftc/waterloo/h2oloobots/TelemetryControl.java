@@ -138,6 +138,39 @@ public class TelemetryControl {
 
     }
 
+    /**Updates telemetry to tell what direction the drivebase is moving for two motor drivebases.
+     * @param leftPower the power for the left motor
+     * @param rightPower the power for the right motor*/
+    public void motorTelemetryUpdate(double leftPower, double rightPower) {
+
+        leftDir = Math.signum(leftPower);
+        rightDir = Math.signum(rightPower);
+
+        double frontMin = Math.min(fldir, frdir);
+        double backMin = Math.min(bldir, brdir);
+
+        String direction = "";
+        packet.clearLines();
+        if (leftDir != 0 || rightDir != 0) {
+            if (leftDir == 1 && rightDir == 1)
+                direction = "Moving Forward";
+            if (leftDir == -1 && rightDir == -1)
+                direction = "Moving Backward";
+            if (leftDir == -1 && rightDir == 1)
+                direction = "Turning Counterclockwise";
+            if (leftDir == 1 && rightDir == -1)
+                direction = "Turning Clockwise";
+            telemetry.addLine(direction + " at " + Math.max(leftPower, rightPower) + "% Speed");
+            packet.addLine(direction + " at " + Math.max(leftPower, rightPower) + "% Speed");
+        } else {
+
+            telemetry.addLine("Stopped");
+            packet.addLine("Stopped");
+
+        }
+
+    }
+
     /**Updates the telemetry and dashboard.*/
     public void update() {
 
