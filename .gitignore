@@ -86,3 +86,5 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/MecDriveVector.java
+/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Sebastian.java
