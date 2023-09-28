@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 
 public class TelemetryControl {
 
@@ -92,6 +93,15 @@ public class TelemetryControl {
             packet.addLine("Stopped");
 
         }
+
+    }
+
+    /**Starts a camera stream pushed to the FTC Dashboard.
+     * @param source The camera source
+     * @param maxFps The maximum framerate allowed to be sent.*/
+    public void startCameraStream(CameraStreamSource source, double maxFps) {
+
+        dashboard.startCameraStream(source, maxFps);
 
     }
 
