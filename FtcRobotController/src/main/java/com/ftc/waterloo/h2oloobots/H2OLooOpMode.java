@@ -5,12 +5,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public abstract class H2OLooOpMode extends LinearOpMode {
 
     public H2OLooOpMode() {}
-    public TelemetryControl telemetryControl = new TelemetryControl(telemetry);
+    public TelemetryControl telemetryControl;
 
-    public DriveTrain driveTrain = new DriveTrain(hardwareMap, telemetryControl, null);
-    public AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl);
+    public DriveTrain driveTrain;
+    public AttachmentControl attachmentControl;
 
     public void runOpMode() {
+
+        telemetryControl = new TelemetryControl(telemetry);
+        driveTrain = new DriveTrain(hardwareMap, telemetryControl);
+        attachmentControl = new AttachmentControl(hardwareMap, telemetryControl);
 
         this.opModeInit();
 
