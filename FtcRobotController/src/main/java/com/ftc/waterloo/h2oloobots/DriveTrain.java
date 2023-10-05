@@ -83,63 +83,28 @@ public class DriveTrain {
 
     /**Initialises the drivetrain variable.
      * @param hardwareMap the local HardwareMap variable from in the runOpMode() void.
-     * @param telemetryControl the TelemetryControl variable initialized in the runOpMode() void.
-     * @param driveTrainType the drivetrain type: can be two wheel, 4 wheel tank, or mecanum.*/
+     * @param telemetryControl the TelemetryControl variable initialized in the runOpMode() void.*/
     public DriveTrain(HardwareMap hardwareMap,
-                      TelemetryControl telemetryControl,
-                      DriveTrainType driveTrainType
+                      TelemetryControl telemetryControl
     ) {
 
         this.hardwareMap = hardwareMap;
         this.telemetryControl = telemetryControl;
-        this.driveTrainType = driveTrainType;
-
-        switch (driveTrainType) {
-
-            case TWO_WHEEL_DRIVE:
-                this.TwoWheelInit();
-                break;
-
-            case FOUR_WHEEL_TANK:
-            case MECANUM:
-                this.FourMotorInit();
-                break;
-
-        }
 
     }
 
     /**Initialises the drivetrain variable.
      * @param hardwareMap the local HardwareMap variable from in the runOpMode() void.
      * @param telemetryControl the TelemetryControl variable initialized in the runOpMode() void.
-     * @param driveTrainType the drivetrain type: can be two wheel, 4 wheel tank, or mecanum.
      * @param zeroPowerBehavior the zero power behavior to be set to the drive motors.*/
     public DriveTrain(
             HardwareMap hardwareMap,
             TelemetryControl telemetryControl,
-            DriveTrainType driveTrainType,
             DcMotor.ZeroPowerBehavior zeroPowerBehavior
     ) {
 
         this.hardwareMap = hardwareMap;
         this.telemetryControl = telemetryControl;
-        this.driveTrainType = driveTrainType;
-
-        switch (driveTrainType) {
-
-            case TWO_WHEEL_DRIVE:
-                this.TwoWheelInit(zeroPowerBehavior);
-                break;
-
-            case FOUR_WHEEL_TANK:
-            case MECANUM:
-                this.FourMotorInit(zeroPowerBehavior);
-                break;
-
-            default:
-                break;
-
-        }
 
     }
 
