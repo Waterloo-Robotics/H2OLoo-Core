@@ -36,7 +36,7 @@ public class DriveTrain {
 
     }
 
-    DriveTrainType driveTrainType;
+    DriveTrainType driveTrainType = DriveTrainType.MECANUM;
 
     // defines drive motors for a 4 wheel drive
     DcMotor fl, fr, bl, br;
@@ -90,6 +90,7 @@ public class DriveTrain {
 
         this.hardwareMap = hardwareMap;
         this.telemetryControl = telemetryControl;
+        this.FourMotorInit();
 
     }
 
@@ -105,12 +106,15 @@ public class DriveTrain {
 
         this.hardwareMap = hardwareMap;
         this.telemetryControl = telemetryControl;
+        this.FourMotorInit(zeroPowerBehavior);
 
     }
 
     /**Sets the drivetrain type after the constructor.
      * @param driveTrainType the DriveTrain type to be set*/
     public void setDriveTrainType(@NonNull DriveTrainType driveTrainType) {
+
+        this.driveTrainType = driveTrainType;
 
         switch (driveTrainType) {
 
@@ -124,6 +128,7 @@ public class DriveTrain {
                 break;
 
             default:
+                this.FourMotorInit();
                 break;
 
         }
@@ -133,7 +138,9 @@ public class DriveTrain {
     /**Sets the drivetrain type after the constructor.
      * @param driveTrainType the DriveTrain type to be set
      * @param zeroPowerBehavior the behavior of the motors when they are not receiving power*/
-    public void setDriveTrainType(@NonNull DriveTrainType driveTrainType, DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
+    public void setDriveTrainType(@NonNull DriveTrainType driveTrainType, @NonNull DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
+
+        this.driveTrainType = driveTrainType;
 
         switch (driveTrainType) {
 
@@ -147,6 +154,7 @@ public class DriveTrain {
                 break;
 
             default:
+                this.FourMotorInit(zeroPowerBehavior);
                 break;
 
         }
@@ -255,6 +263,7 @@ public class DriveTrain {
                 RobotLog.setGlobalErrorMsg("Passing in a LRInput is necessary. Please use the " +
                         "version of this function that uses 'teleOpDrive(FBInput, LRInput," +
                         " pivotInput)'.");
+                break;
 
         }
 
