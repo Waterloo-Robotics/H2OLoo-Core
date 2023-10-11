@@ -9,11 +9,13 @@ public abstract class H2OLooOpMode extends LinearOpMode {
 
     public DriveTrain driveTrain;
     public AttachmentControl attachmentControl;
+    public OdometryControl odometryControl;
 
     public void runOpMode() {
 
         telemetryControl = new TelemetryControl(telemetry);
         driveTrain = new DriveTrain(hardwareMap, telemetryControl);
+        odometryControl = new OdometryControl(hardwareMap, telemetryControl);
         attachmentControl = new AttachmentControl(hardwareMap, telemetryControl);
 
         this.opModeInit();
