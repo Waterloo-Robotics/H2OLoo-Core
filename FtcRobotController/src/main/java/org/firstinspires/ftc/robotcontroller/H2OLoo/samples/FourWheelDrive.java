@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.robotcontroller.H2OLoo.samples;
 
 import com.ftc.waterloo.h2oloobots.DriveTrain;
-import com.ftc.waterloo.h2oloobots.H2OLooOpMode;
+import com.ftc.waterloo.h2oloobots.H2OLooTeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @Disabled
 @TeleOp(name = "Four Wheel Drive TeleOp", group = "H2OLoo Samples")
-public class FourWheelDrive extends H2OLooOpMode {
+public class FourWheelDrive extends H2OLooTeleOp {
 
     @Override
     public void opModeInit() {
