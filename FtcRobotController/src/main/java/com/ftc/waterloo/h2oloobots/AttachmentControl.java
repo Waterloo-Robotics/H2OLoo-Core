@@ -1,5 +1,6 @@
 package com.ftc.waterloo.h2oloobots;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**This AttachmentControl class just offers a global area to store any non-drivebase commands and
@@ -12,10 +13,13 @@ public class AttachmentControl {
      * having to route it from the opMode to this class.
     */
     TelemetryControl telemetryControl;
+    Gamepad gamepad1, gamepad2;
 
-    public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl) {
+    public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl, Gamepad gamepad1, Gamepad gamepad2) {
 
         this.telemetryControl = telemetryControl;
+        this.gamepad1 = gamepad1;
+        this.gamepad2 = gamepad2;
 
     }
 
