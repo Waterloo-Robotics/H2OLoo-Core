@@ -138,6 +138,25 @@ public class OdometryControl {
 
     }
 
+    /**Returns the current distance of each encoder in the default Measurement Unit*/
+    public void odoTelemetry() {
+
+        telemetryControl.addData("Left Enc", leftEncoder.getDistance());
+        telemetryControl.addData("Right Enc", rightEncoder.getDistance());
+        telemetryControl.addData("Horiz Enc", horizEncoder.getDistance());
+
+    }
+
+    /**Returns the current distance of each encoder in the specified Measurement Unit
+     * @param measurementUnit the Measurement Unit to use.*/
+    public void odoTelemetry(Encoder.MeasurementUnit measurementUnit) {
+
+        telemetryControl.addData("Left Enc", leftEncoder.getDistance(measurementUnit));
+        telemetryControl.addData("Right Enc", rightEncoder.getDistance(measurementUnit));
+        telemetryControl.addData("Horiz Enc", horizEncoder.getDistance(measurementUnit));
+
+    }
+
     /** Updates the positionAtStart values to the current position. */
     public void zeroEncoders() {
 
