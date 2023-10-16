@@ -20,7 +20,9 @@ public class Encoder {
     public enum MeasurementUnit {
 
         IN,
-        MM
+        MM,
+        REV,
+        PULSES
 
     }
 
@@ -140,6 +142,13 @@ public class Encoder {
                     distance = this.getDistance() * 25.4;
                     break;
 
+                case REV:
+                    distance = this.getRotations();
+                    break;
+
+                case PULSES:
+                    distance = this.getCurrentPosition();
+                    break;
             }
 
         } else {
