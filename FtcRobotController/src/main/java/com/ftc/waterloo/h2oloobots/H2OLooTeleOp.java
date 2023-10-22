@@ -10,7 +10,7 @@ public abstract class H2OLooTeleOp extends LinearOpMode {
     public DriveTrain driveTrain;
     public AttachmentControl attachmentControl;
 
-    CameraControl cameraControl;
+    public CameraControl cameraControl;
 
     public void runOpMode() {
 

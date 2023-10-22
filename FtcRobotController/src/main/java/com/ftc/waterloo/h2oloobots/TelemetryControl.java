@@ -1,10 +1,22 @@
 package com.ftc.waterloo.h2oloobots;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.function.Consumer;
+import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
+import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.VisionProcessor;
+import org.opencv.android.Utils;
+import org.opencv.core.Mat;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class TelemetryControl {
 
@@ -38,6 +50,13 @@ public class TelemetryControl {
 
         telemetry.addData(caption, value);
         packet.put(caption, value);
+
+    }
+
+    public void addData(String caption, String format, Object... args) {
+
+        telemetry.addData(caption, format, args);
+        packet.put(caption, String.format(format, args));
 
     }
 
