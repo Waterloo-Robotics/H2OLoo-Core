@@ -164,14 +164,7 @@ public class DriveTrain {
     /**Initialization for two motor drivebase (one left, one right).*/
     void TwoWheelInit() {
 
-        left = hardwareMap.dcMotor.get("left");
-        right = hardwareMap.dcMotor.get("right");
-
-        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.TwoWheelInit(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
 
@@ -197,18 +190,7 @@ public class DriveTrain {
      * side. Could be mecanum or tank.*/
     void FourMotorInit() {
 
-        fl = hardwareMap.dcMotor.get("fl");
-        fr = hardwareMap.dcMotor.get("fr");
-        bl = hardwareMap.dcMotor.get("bl");
-        br = hardwareMap.dcMotor.get("br");
-
-        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        fl.setDirection(DcMotorSimple.Direction.REVERSE);
-        bl.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.FourMotorInit(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
 
