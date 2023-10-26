@@ -884,4 +884,13 @@ public class DriveTrain {
 
     }
 
+    public void driveEncoderRawTelemetry() {
+
+        telemetryControl.addData("Front Left Position", fl.getCurrentPosition());
+        telemetryControl.addData("Front Right Position", fr.getCurrentPosition());
+        telemetryControl.addData("Back Left Position", bl.getCurrentPosition());
+        telemetryControl.addData("Back Right Position", br.getCurrentPosition());
+
+    }
+
 }
