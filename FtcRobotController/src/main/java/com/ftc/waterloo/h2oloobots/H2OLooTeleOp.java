@@ -25,6 +25,7 @@ public abstract class H2OLooTeleOp extends LinearOpMode {
 
         while (opModeIsActive()) {
             this.opModePeriodic();
+            telemetryControl.update();
         }
 
     }
