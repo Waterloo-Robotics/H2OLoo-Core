@@ -14,7 +14,7 @@ public class VisionPortalStreaming extends H2OLooTeleOp {
     @Override
     public void opModePeriodic() {
         cameraControl.telemetryAprilTag();
-        cameraControl.startCameraStream(60);
+//        cameraControl.startCameraStream(60);
     }
 
 }
