@@ -36,6 +36,10 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 
 # Release Information
 
+## Version 7.0
+
+* Updated FTC Dashboard Dependency to 0.4.15
+
 ## Version 6.0
 
 * Updated to SDK 9.2
