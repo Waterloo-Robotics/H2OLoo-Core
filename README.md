@@ -36,10 +36,13 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 
 # Release Information
 
-## Version 10.0.0
+## Version 8.0.1
+
+* Updated README.md
+
+## Version 8.0.0
 
 * Updated to SDK 10.0
-* Updated versioning scheme to match the official FTC SDK
 
 ## Version 7.0
 
