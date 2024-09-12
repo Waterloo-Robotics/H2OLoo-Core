@@ -1,6 +1,6 @@
 ## NOTICE
 
-This repository contains the public FTC SDK for the POWERPLAY (2022-2023) competition season, modified by FTC Team 7247, the H2OLoo Bots, to add some quality of life and modularization.
+This repository contains the public FTC SDK for the INTO THE DEEP (2024-2025) competition season, modified by FTC Team 7247, the H2OLoo Bots, to add some quality of life and modularization.
 
 ## Getting Started
 If you are new to robotics or new to the *FIRST* Tech Challenge, then you should consider reviewing the [FTC Blocks Tutorial](https://ftc-docs.firstinspires.org/programming_resources/blocks/Blocks-Tutorial.html) to get familiar with how to use the control system:
@@ -35,6 +35,11 @@ Samples Folder: &nbsp;&nbsp; [/FtcRobotController/src/main/java/org/firstinspire
 The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc/teamcode](TeamCode/src/main/java/org/firstinspires/ftc/teamcode) folder contains an explanation of the sample naming convention, and instructions on how to copy them to your own project space.
 
 # Release Information
+
+## Version 10.0.0
+
+* Updated to SDK 10.0
+* Updated versioning scheme to match the official FTC SDK
 
 ## Version 7.0
 
